@@ -4,7 +4,10 @@
   "description": "Armantara Backend",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node index.js",  
+    "build": "npm install",    
+    "prestart": "npm run build"
+ 
   },
   "author": "Ankit Joshi",
   "license": "ISC",
