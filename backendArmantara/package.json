@@ -4,10 +4,7 @@
   "description": "Armantara Backend",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "npm install",
-    "prestart": "npm run build",
-    "production": "node index.js"
+    "start": "node app.js"
   },
   "author": "Ankit Joshi",
   "license": "ISC",
@@ -24,6 +21,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^7.2.2",
     "morgan": "^1.10.0",
+    "nodemon": "^2.0.22",
     "uuid": "^9.0.0"
   }
 }
