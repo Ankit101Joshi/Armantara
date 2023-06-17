@@ -1,7 +1,7 @@
 {
   "name": "testback",
   "version": "1.0.0",
-  "description": "My Test Project",
+  "description": "Armantara Backend",
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js"
