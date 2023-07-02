@@ -12,7 +12,6 @@ const passwordValidations = [
   ];
 
 router.post("/signup",[
-    check("name","name should be at least 3 char").isLength({ min: 5 }),
     check("email","email is required").isEmail(),
     ...passwordValidations,
 ], signup);
