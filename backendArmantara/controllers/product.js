@@ -5,16 +5,23 @@ const fs = require('fs');
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
     .populate("category")
-    .exec((err, product) => {
-      if (err) {
+    .then(product => {
+      if (!product) {
         return res.status(400).json({
           error: "Product not found",
         });
       }
       req.product = product;
       next();
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        error: "Internal server error",
+      });
     });
 };
+
 
 
 exports.createProduct = (req, res) => {
@@ -80,20 +87,39 @@ exports.photo = (req, res, next) =>{
 }
 
 //delete controller
-exports.deleteProduct = (req, res) =>{
-  let product = req.product;
-  product.remove((err, deletedProduct)=>{
-    if(err){
-      return res.status(400).json({
-        error: "Failed to delete the product"
-      })
-    }
+exports.deleteProduct = async (req, res) => {
+  const product = req.product;
+  try {
+    await product.deleteOne();
+
     res.json({
       message: "Deleted the product successfully",
-      deletedProduct
-    })
-  })
-}
+      deletedProduct: product,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      error: "Failed to delete the product",
+    });
+  }
+};
+
+
+exports.removeCategory = async (req, res) => {
+  const category = req.category;
+
+  try {
+    await category.deleteOne();
+    res.json({
+      message: `Successfully deleted category`,
+    });
+  } catch (err) {
+    res.status(400).json({
+      error: `Failed to delete category ${category}`,
+    });
+  }
+};
+
+
 
 exports.updateProduct = (req, res) =>{
   let form = new formidable.IncomingForm();
@@ -141,24 +167,32 @@ exports.updateProduct = (req, res) =>{
 
 //product listing
 
-exports.getAllProducts = (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : 8;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+exports.getAllProducts = async (req, res) => {
+  try {
+    let limit = req.query.limit ? parseInt(req.query.limit) : 8;
+    let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
-  Product.find()
-    .select("-photo")
-    .populate("category")
-    .sort([[sortBy, "asc"]])
-    .limit(limit)
-    .exec((err, products) => {
-      if (err) {
-        return res.status(400).json({
-          error: "No product found",
-        });
-      }
-      res.json(products);
+    const products = await Product.find()
+      .select("-photo")
+      .populate("category")
+      .sort([[sortBy, "asc"]])
+      .limit(limit)
+      .exec();
+
+    if (products.length === 0) {
+      return res.status(400).json({
+        error: "No products found",
+      });
+    }
+
+    res.json(products);
+  } catch (err) {
+    return res.status(500).json({
+      error: "Internal server error",
     });
+  }
 };
+
 
 
 exports.getAllUinqueCategories = (req, res) =>{

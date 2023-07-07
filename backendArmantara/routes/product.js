@@ -31,16 +31,17 @@ router.post(
 
 //read routes
 router.get("/product/:productId", getProduct);
-router.get("product/photo/:productId", photo);
+router.get("/product/photo/:productId", photo);
 
 //delete route
 router.delete(
-  "/product/:proudctId/:userId",
+  "/product/:productId/:userId",
   isSignedIn,
   isAuthenticated,
   isAdmin,
   deleteProduct
 );
+
 
 //update route
 router.put(

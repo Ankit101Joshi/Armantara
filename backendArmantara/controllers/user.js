@@ -91,3 +91,38 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
     }
   );
 };
+
+exports.getUserWishlist = (req, res) => {
+  User.findById(req.profile._id)
+    .populate("wishlist", "name price")
+    .exec((err, user) => {
+      if (err || !user) {
+        return res.status(400).json({
+          error: "No user found",
+        });
+      }
+      res.json(user.wishlist);
+    });
+};
+
+exports.getUserOrders = (req, res) => {
+  Order.find({ user: req.profile._id })
+    .populate("products.product", "name price")
+    .exec((err, orders) => {
+      if (err || !orders) {
+        return res.status(400).json({
+          error: "No orders found",
+        });
+      }
+      res.json(orders);
+    });
+};
+
+exports.getAccountSettings = (req, res) => {
+  const { _id, name, email } = req.profile;
+  return res.json({
+    _id,
+    name,
+    email,
+  });
+};

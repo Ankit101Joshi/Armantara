@@ -13,6 +13,9 @@ const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
 const ProductRoutes = require("./routes/product");
 const orderRoutes = require("./routes/order");
+const contactRouter = require("./routes/contact");
+
+
 
 //MiddleWare
 app.use(bodyParser.json());
@@ -35,6 +38,9 @@ app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", ProductRoutes);
 app.use("/api", orderRoutes);
+
+// Use the contact router
+app.use("/api", contactRouter);
 
 //PORT
 const port = process.env.PORT || 8000;
