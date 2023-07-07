@@ -122,7 +122,7 @@ const Signin = () => {
       {loadingMessage()}
       {errorMessage()}
       {signInForm()}
-      {performRedirect}
+      {performRedirect()}
     </Base>
   );
 };
