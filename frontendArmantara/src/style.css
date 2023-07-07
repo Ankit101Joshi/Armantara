@@ -1,16 +1,9 @@
 .btn,
 .jumbotron,
-.nav :hover{
-    border-radius: 0px;
+.nav :hover {
+  border-radius: 0px;
 }
 
 body {
-    background-color: #343a40;
+  background: #343a40;
 }
-
-footer {
-    flex-shrink: 0;
-    background-color: #f5f5f5;
-    padding: 20px;
-    text-align: center;
-  }

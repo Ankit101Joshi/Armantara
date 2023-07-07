@@ -1,45 +1,116 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { Fragment } from "react";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import { signout, isAuthenticated } from "../auth/helper";
+import armantaraLogo from "../assets/armantara-logo.jpg";
 
-const useCurrentTab = (path) => {
-    const location = useLocation();
+
+const Menu = ({ history }) => {
+  const location = useLocation();
+
+  const currentTab = (path) => {
     if (location.pathname === path) {
-        return { color: "#1FAA59" };
+      return { color: "#1FAA59" };
     } else {
-        return { color: "#FFFF" };
+      return { color: "#FFFF" };
     }
-};
+  };
 
-const Menu = () => {
-    const currentTabStyle = useCurrentTab;
+  return (
+  <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <Link className="navbar-brand" style={currentTab("/")} to="/">
+        <img src={armantaraLogo} alt="Armantara Logo" width="250px" height="100px" />
+      </Link>
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
 
-    return (
-        <div>
-            <ul className="nav nav-tabs bg-dark">
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/")} className="nav-link" to="/">HOME</Link>
-                </li>
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/cart")} className="nav-link" to="/cart">CART</Link>
-                </li>
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/dashboard")} className="nav-link" to="/dashboard">Dashboard</Link>
-                </li>
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/admin/dashboard")} className="nav-link" to="/admin/dashboard">A. Dashboard</Link>
-                </li>
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/signup")} className="nav-link" to="/signup">SignUp</Link>
-                </li>
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/signin")} className="nav-link" to="/signin">SignIn</Link>
-                </li>
-                <li className="nav-item">
-                    <Link style={currentTabStyle("/signout")} className="nav-link" to="/signout">SignOut</Link>
-                </li>
-            </ul>
-        </div>
-    );
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item">
+            <Link style={currentTab("/")} className="nav-link" to="/">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link style={currentTab("/cart")} className="nav-link" to="/cart">
+              Cart
+            </Link>
+          </li>
+          {isAuthenticated() && isAuthenticated().user.role === 0 && (
+            <li className="nav-item">
+              <Link
+                style={currentTab("/user/dashboard")}
+                className="nav-link"
+                to="/user/dashboard"
+              >
+                User Dashboard
+              </Link>
+            </li>
+          )}
+          {isAuthenticated() && isAuthenticated().user.role === 1 && (
+            <li className="nav-item">
+              <Link
+                style={currentTab("/admin/dashboard")}
+                className="nav-link"
+                to="/admin/dashboard"
+              >
+                Admin Dashboard
+              </Link>
+            </li>
+          )}
+          {!isAuthenticated() && (
+            <Fragment>
+              <li className="nav-item">
+                <Link
+                  style={currentTab("/signup")}
+                  className="nav-link"
+                  to="/signup"
+                >
+                  Signup
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  style={currentTab("/signin")}
+                  className="nav-link"
+                  to="/signin"
+                >
+                  Sign In
+                </Link>
+              </li>
+            </Fragment>
+          )}
+          {isAuthenticated() && (
+            <li className="nav-item">
+              <span
+                className="nav-link text-warning"
+                onClick={() => {
+                  signout(() => {
+                    history.push("/");
+                  });
+                }}
+              >
+                Signout
+              </span>
+            </li>
+          )}
+          <li className="nav-item">
+            <Link style={currentTab("/aboutus")} className="nav-link" to="/aboutus">
+              About Us
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
 };
 
 export default Menu;
