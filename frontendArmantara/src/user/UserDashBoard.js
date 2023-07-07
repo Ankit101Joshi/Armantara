@@ -1,6 +1,7 @@
 import React from "react";
 import Base from "../core/Base";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  
 const UserDashBoard = () => {
   return (
     <Base title="User Dashboard - Armantara">

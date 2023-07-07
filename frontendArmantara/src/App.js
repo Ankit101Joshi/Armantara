@@ -1,9 +1,14 @@
-import React from 'react';
+// import necessary libraries and components
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
-const App = (props) => {
-  return (
-  <Routes />
-  );
-};
+// Initialize Font Awesome icons library
+library.add(faUser, faShoppingCart);
 
-export default App;
+// Render your application components
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
