@@ -29,7 +29,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("DB CONNECTED SUCCESSFULLY!");
+    console.log("DB CONNECTED SUCCESSFULLY!"+process.env.DATABASE);
   });
 
 //My Routes
