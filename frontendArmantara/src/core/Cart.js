@@ -77,7 +77,7 @@ const Cart = () => {
                   Tax (13%): <span className="font-weight-bold">$ {calculateTax(calculateTotalPrice())}</span>
                 </p>
                 <p className="text-light">
-                Total: <span className="font-weight-bold">$ {parseFloat(calculateTotalPrice()) + parseFloat(calculateTax(calculateTotalPrice()))}</span>
+                Total Price: <span className="font-weight-bold">$ {(parseFloat(calculateTotalPrice()) + parseFloat(calculateTax(calculateTotalPrice()))).toFixed(2)}</span>
                 </p>
                 <button className="btn btn-primary btn-block">Proceed to Checkout</button>
               </div>
