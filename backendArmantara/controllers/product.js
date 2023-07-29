@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const formidable = require('formidable');
 const fs = require('fs');
+const _ = require('lodash');
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
@@ -21,8 +22,6 @@ exports.getProductById = (req, res, next, id) => {
       });
     });
 };
-
-
 
 exports.createProduct = (req, res) => {
   let form = new formidable.IncomingForm();
@@ -52,11 +51,11 @@ exports.createProduct = (req, res) => {
       });
     }
 
-    let product = new Product(fields)
+    let product = new Product(fields);
 
     if (files.photo) {
-      product.photo.data = fs.readFileSync(files.photo.filepath)
-      product.photo.contentType = files.photo.mimetype
+      product.photo.data = fs.readFileSync(files.photo.filepath);
+      product.photo.contentType = files.photo.mimetype;
     }
 
     // Save product to the database
@@ -74,19 +73,19 @@ exports.createProduct = (req, res) => {
 
 exports.getProduct = (req, res) => {
   req.product.photo = undefined;
-  return res.json(req.product)
-}
+  return res.json(req.product);
+};
 
-//This is a middleware
+// This is a middleware
 exports.photo = (req, res, next) =>{
-  if(req.product.photo.data){
-    res.set("Content-Type", req.product.photo.contentType)
-    return res.send(req.product.photo.data)
+  if(req.product.photo && req.product.photo.data){
+    res.set("Content-Type", req.product.photo.contentType);
+    return res.send(req.product.photo.data);
   }
   next();
-}
+};
 
-//delete controller
+// delete controller
 exports.deleteProduct = async (req, res) => {
   const product = req.product;
   try {
@@ -103,24 +102,6 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-
-exports.removeCategory = async (req, res) => {
-  const category = req.category;
-
-  try {
-    await category.deleteOne();
-    res.json({
-      message: `Successfully deleted category`,
-    });
-  } catch (err) {
-    res.status(400).json({
-      error: `Failed to delete category ${category}`,
-    });
-  }
-};
-
-
-
 exports.updateProduct = (req, res) =>{
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -133,23 +114,22 @@ exports.updateProduct = (req, res) =>{
     }
 
     // Destructure fields and files
-    // const { name, description, price, category, stock } = fields;
-    // const { photo } = files;
+    const { name, description, price, category, stock } = fields;
+    const { photo } = files;
 
-
-    if (photo.size > 3081752) {
+    if (photo && photo.size > 3081752) {
       return res.status(400).json({
         error: 'File size too big!'
       });
     }
 
-    //updation code
-    let product = req.product
-    product = _.extend(product, fields)
+    // updation code
+    let product = req.product;
+    product = _.extend(product, fields);
 
     if (files.photo) {
-      product.photo.data = fs.readFileSync(files.photo.filepath)
-      product.photo.contentType = files.photo.mimetype
+      product.photo.data = fs.readFileSync(files.photo.filepath);
+      product.photo.contentType = files.photo.mimetype;
     }
 
     // Save product to the database
@@ -163,10 +143,9 @@ exports.updateProduct = (req, res) =>{
         });
       });
   });
-}
+};
 
-//product listing
-
+// product listing
 exports.getAllProducts = async (req, res) => {
   try {
     let limit = req.query.limit ? parseInt(req.query.limit) : 8;
@@ -193,37 +172,35 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-
-
 exports.getAllUinqueCategories = (req, res) =>{
   Product.distinct("category", {}, (err, category) =>{
     if(err){
-      return res.statu(400).json({
+      return res.status(400).json({
         error: "No category found"
-      })
+      });
     }
-    res.json(category)
-  })
-}
+    res.json(category);
+  });
+};
 
-//middleware
+// middleware
 exports.updateStock = (req, res, next) =>{
 
-    let myOperations = req.body.order.products.map(prod =>{
-      return{
-        updateOne: {
-          fliter: {_id: prod._id},
-          update: {$inc: {stock: -prod.count, sold: +prod.count}}
-        }
+  let myOperations = req.body.order.products.map(prod =>{
+    return {
+      updateOne: {
+        filter: {_id: prod._id},
+        update: {$inc: {stock: -prod.count, sold: +prod.count}}
       }
-    })
-    
-    Product.bulkWrite(myOperations, {}, (err, products) =>{
-      if(err){
-        return res.status(400).json({
-          error: "Bulk operation failed"
-        })
-      }
-      next();
-    })
-}
+    };
+  });
+  
+  Product.bulkWrite(myOperations, {}, (err, products) =>{
+    if(err){
+      return res.status(400).json({
+        error: "Bulk operation failed"
+      });
+    }
+    next();
+  });
+};

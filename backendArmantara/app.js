@@ -6,6 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+// const stripe = require('stripe')
 
 // My Routes
 const authRoutes = require("./routes/auth");
@@ -14,6 +15,7 @@ const categoryRoutes = require("./routes/category");
 const ProductRoutes = require("./routes/product");
 const orderRoutes = require("./routes/order");
 const contactRouter = require("./routes/contact");
+const stripeRoutes = require("./routes/stripepayment");
 
 
 
@@ -38,6 +40,7 @@ app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", ProductRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", stripeRoutes);
 
 // Use the contact router
 app.use("/api", contactRouter);

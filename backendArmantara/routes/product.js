@@ -44,13 +44,15 @@ router.delete(
 
 
 //update route
+// update route
 router.put(
-    "/product/:proudctId/:userId",
-    isSignedIn,
-    isAuthenticated,
-    isAdmin,
-    updateProduct
-  );
+  "/product/:productId/:userId",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  updateProduct
+);
+
   
 
 //listing route

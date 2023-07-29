@@ -30,20 +30,20 @@ exports.signup = async (req, res) => {
 
 
 
+
 exports.signin = async (req, res) => {
-  // Validate request body
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg
-    });
-  }
-
-  const { email, password } = req.body;
-
   try {
+    // Validate request body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        error: errors.array()[0].msg
+      });
+    }
+
+    const { email, password } = req.body;
+
     // Check if the user exists in the database
-    
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -51,18 +51,17 @@ exports.signin = async (req, res) => {
       });
     }
 
-    console.log("Email is correct "+email)
-
     // Verify the password
-    if (!user.authenticate(password)) {
+    const isPasswordValid = await user.authenticate(password);
+    if (!isPasswordValid) {
       return res.status(401).json({
         error: "Email and password do not match"
       });
     }
-    console.log('here')
+
     // Create token
     const token = jwt.sign({ _id: user._id }, process.env.SECRET);
-    console.log(token)
+
     // Put token in cookie
     res.cookie("token", token, { expire: new Date() + 9999 });
 
@@ -70,10 +69,11 @@ exports.signin = async (req, res) => {
     const { _id, name, role } = user;
     return res.json({
       token,
-      user: {_id,name,role,email}
+      user: { _id, name, role, email }
     });
   } catch (err) {
-    res.status(500).json({
+    console.log(err);
+    return res.status(500).json({
       error: "Internal server error"
     });
   }
