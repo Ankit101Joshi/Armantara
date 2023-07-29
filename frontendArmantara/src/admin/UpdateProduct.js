@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import Base from "../core/Base";
-import { Link } from "react-router-dom";
+import { isAuthenticated } from "../auth/helper";
 import { getCategories, getProduct, updateProduct } from "./helper/adminapicall";
-import { isAuthenticated } from "../auth/helper/index";
 
-const UpdateProduct = ({ match }) => {
+const UpdateProduct = () => {
+  const { productId } = useParams(); // Use useParams() hook to get the productId from the URL
+
   const { user, token } = isAuthenticated();
 
   const [values, setValues] = useState({
@@ -12,12 +14,12 @@ const UpdateProduct = ({ match }) => {
     description: "",
     price: "",
     stock: "",
-    photo: "",
     categories: [],
     category: "",
     loading: false,
     error: "",
-    updatedProduct: false
+    updatedProduct: false,
+    photo: "",
   });
 
   const {
@@ -29,11 +31,13 @@ const UpdateProduct = ({ match }) => {
     category,
     loading,
     error,
-    updatedProduct
+    updatedProduct,
+    photo,
   } = values;
 
   const preload = (productId) => {
     getProduct(productId).then((data) => {
+      console.log("Product Data:", data); // Check the product data received from the API
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
@@ -42,41 +46,47 @@ const UpdateProduct = ({ match }) => {
           name: data.name,
           description: data.description,
           price: data.price,
-          category: data.category._id,
-          stock: data.stock
+          category: data.category ? data.category._id : "", // Check the value of data.category
+          stock: data.stock,
         });
       }
     });
   };
+  
+  
 
   const preloadCategories = () => {
-    getCategories().then((data) => {
-      if (data.error) {
-        setValues({ ...values, error: data.error });
-      } else {
-        setValues({ ...values, categories: data });
-      }
-    });
+    getCategories()
+      .then((data) => {
+        if (data.error) {
+          setValues({ ...values, error: data.error });
+        } else {
+          setValues({ ...values, categories: data });
+        }
+      });
   };
+  
 
   useEffect(() => {
-    preload(match.params.productId);
+    preload(productId); // Use the productId from useParams()
     preloadCategories();
-  }, [match.params.productId]); // Add match.params.productId as a dependency
+  }, [productId]); // Add productId as a dependency for useEffect
 
   const onSubmit = (event) => {
     event.preventDefault();
     setValues({ ...values, error: "", loading: true });
 
-    // Update the product
     const formData = new FormData();
-    formData.set("name", name);
-    formData.set("description", description);
-    formData.set("price", price);
-    formData.set("category", category);
-    formData.set("stock", stock);
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("category", category);
+    formData.append("stock", stock);
+    if (photo) {
+      formData.append("photo", photo);
+    }
 
-    updateProduct(match.params.productId, user._id, token, formData)
+    updateProduct(productId, user._id, token, formData)
       .then((data) => {
         if (data.error) {
           setValues({ ...values, error: data.error });
@@ -84,7 +94,7 @@ const UpdateProduct = ({ match }) => {
           setValues({
             ...values,
             loading: false,
-            updatedProduct: true
+            updatedProduct: true,
           });
         }
       })
@@ -92,8 +102,7 @@ const UpdateProduct = ({ match }) => {
   };
 
   const handleChange = (name) => (event) => {
-    const value =
-      name === "photo" ? event.target.files[0] : event.target.value;
+    const value = name === "photo" ? event.target.files[0] : event.target.value;
     setValues({ ...values, [name]: value });
   };
 
@@ -105,6 +114,7 @@ const UpdateProduct = ({ match }) => {
       <h4>Product updated successfully</h4>
     </div>
   );
+
 
   const updateProductForm = () => (
     <form>
@@ -158,7 +168,17 @@ const UpdateProduct = ({ match }) => {
           value={stock}
         />
       </div>
-
+      <div className="form-group">
+        <label className="btn btn-block btn-success">
+          <input
+            onChange={handleChange("photo")}
+            type="file"
+            name="photo"
+            accept="image"
+            placeholder="Choose a file"
+          />
+        </label>
+      </div>
       <button
         type="submit"
         onClick={onSubmit}
@@ -175,9 +195,9 @@ const UpdateProduct = ({ match }) => {
       description="Update product details"
       className="container bg-info p-4"
     >
-   <Link to="/admin/dashboard" className="btn btn-md btn-dark mb-3">
-  Admin Home
-</Link>
+      <Link to="/admin/dashboard" className="btn btn-md btn-dark mb-3">
+        Admin Home
+      </Link>
 
       <div className="row bg-dark text-white rounded">
         <div className="col-md-8 offset-md-2">

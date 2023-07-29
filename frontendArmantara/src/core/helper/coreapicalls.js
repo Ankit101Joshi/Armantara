@@ -17,8 +17,23 @@ export const getProducts = async () => {
   }
 };
 
+export const getProduct = async (productId) => {
+  try {
+    const response = await fetch(`${API}/product/${productId}`, {
+      method: "GET"
+    });
 
-//get all categories
+    if (!response.ok) {
+      throw new Error("Failed to fetch product");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    return { error: "Failed to fetch product" };
+  }
+};
+
 export const getCategories = () => {
   return fetch(`${API}/categories`, {
     method: "GET"

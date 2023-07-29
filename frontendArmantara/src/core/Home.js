@@ -8,6 +8,7 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOption, setSortOption] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(false);
 
   const loadAllProducts = () => {
@@ -43,23 +44,38 @@ const Home = () => {
     setSortOption(event.target.value);
   };
 
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   const filterProducts = () => {
     let filteredProducts = [...products];
-
+  
+    // Filter by selected category
     if (selectedCategory !== "") {
       filteredProducts = filteredProducts.filter(
-        (product) => product.category._id === selectedCategory
+        (product) =>
+          product.category && product.category._id === selectedCategory
       );
     }
-
+  
+    // Sort products
     if (sortOption === "price-asc") {
       filteredProducts.sort((a, b) => a.price - b.price);
     } else if (sortOption === "price-desc") {
       filteredProducts.sort((a, b) => b.price - a.price);
     }
-
+  
+    // Filter by search query
+    if (searchQuery.trim() !== "") {
+      filteredProducts = filteredProducts.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+  
     return filteredProducts;
   };
+  
 
   const renderProducts = () => {
     const filteredProducts = filterProducts();
@@ -82,7 +98,18 @@ const Home = () => {
           <h1 className="text-center text-white mt-4 mb-5">Featured Products</h1>
         </div>
         <div className="row mb-4">
-          <div className="col-md-6">
+          <div className="col-md-4">
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={handleSearch}
+              />
+            </div>
+          </div>
+          <div className="col-md-4">
             <div className="form-group">
               <select
                 className="form-control"
@@ -98,7 +125,7 @@ const Home = () => {
               </select>
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
             <div className="form-group">
               <select
                 className="form-control"

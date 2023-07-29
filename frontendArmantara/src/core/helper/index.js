@@ -1,4 +1,5 @@
 import { API } from "../../backend";
+import { useNavigate } from "react-router-dom";
 
 export const signup = user =>{
     return fetch(`${API}/signup`, {
@@ -38,15 +39,18 @@ export const authenticate = (data, next) =>{
 }
 
 export const signout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("jwt");
-      return fetch(`${API}/signout`, {
-        method: "GET",
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("jwt");
+    return fetch(`${API}/signout`, {
+      method: "GET",
+    })
+      .then((response) => {
+        console.log("signout success");
+        window.location.reload(); // Reload the page after signout
       })
-        .then(response => console.log("Signout Successful"))
-        .catch(err => console.log(err));
-    }
-  };
+      .catch((err) => console.log(err));
+  }
+};
   
 
   export const isAuthenticated = () => {

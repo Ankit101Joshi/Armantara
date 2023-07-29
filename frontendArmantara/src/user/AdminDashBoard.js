@@ -32,7 +32,7 @@ const AdminDashBoard = () => {
             </Link>
           </li>
           <li className="list-group-item">
-            <Link to="/admin/orders" className="nav-link text-success">
+            <Link to="/order/status" className="nav-link text-success">
               Manage Orders
             </Link>
           </li>

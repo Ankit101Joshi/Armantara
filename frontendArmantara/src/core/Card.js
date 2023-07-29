@@ -1,37 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ImageHelper from "./helper/ImageHelper";
-import { Routes, Route, Navigate } from "react-router-dom";
-
-
 import { addItemToCart, removeItemFromCart } from "./helper/cartHelper";
+import {API} from "../backend"
 
 const Card = ({
   product,
   addtoCart = true,
   removeFromCart = false,
-  setReload = f => f,
-  //   function(f){return f}
+  setReload = (f) => f,
   reload = undefined
 }) => {
+  const navigate = useNavigate();
   const [redirect, setRedirect] = useState(false);
   const [count, setCount] = useState(product.count);
 
   const cartTitle = product ? product.name : "A photo from pexels";
-  const cartDescrption = product ? product.description : "Default description";
+  const cartDescription = product ? product.description : "Default description";
   const cartPrice = product ? product.price : "DEFAULT";
 
   const addToCart = () => {
     addItemToCart(product, () => setRedirect(true));
   };
 
-  const getARedirect = redirect => {
+  const getARedirect = () => {
     if (redirect) {
-      return <Navigate to="/cart" />;
+      navigate("/cart");
     }
   };
-  
 
-  const showAddToCart = addtoCart => {
+  const viewProduct = () => {
+    navigate(`/product/${product._id}`);
+  };
+
+  const showAddToCart = (addtoCart) => {
     return (
       addtoCart && (
         <button
@@ -44,7 +46,7 @@ const Card = ({
     );
   };
 
-  const showRemoveFromCart = removeFromCart => {
+  const showRemoveFromCart = (removeFromCart) => {
     return (
       removeFromCart && (
         <button
@@ -59,17 +61,33 @@ const Card = ({
       )
     );
   };
+
+  const truncateDescription = (description, maxLength) => {
+    if (description.length > maxLength) {
+      return `${description.slice(0, maxLength)}...`;
+    }
+    return description;
+  };
+
   return (
-    <div className="card text-white bg-dark border border-info ">
-      <div className="card-header lead">{cartTitle}</div>
+    <div className="card text-white bg-dark border border-info">
+      <div className="card-header font-weight-bold lead">{cartTitle}</div>
       <div className="card-body">
-        {getARedirect(redirect)}
+        {getARedirect()}
         <ImageHelper product={product} />
-        <p className="lead bg-success font-weight-normal text-wrap">
-          {cartDescrption}
+        <p className=" font-weight-normal text-wrap">
+          {truncateDescription(cartDescription, 100)}
         </p>
-        <p className="btn btn-success rounded  btn-sm px-4">$ {cartPrice}</p>
+        <p className="btn btn-warning rounded px-4">$ {cartPrice}</p>
         <div className="row">
+          <div className="col-12">
+            <button
+              onClick={viewProduct}
+              className="btn btn-block btn-outline-primary mt-2 mb-2"
+            >
+              View Product
+            </button>
+          </div>
           <div className="col-12">{showAddToCart(addtoCart)}</div>
           <div className="col-12">{showRemoveFromCart(removeFromCart)}</div>
         </div>
