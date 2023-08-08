@@ -9,7 +9,6 @@ exports.getUserById = async (req, res, next, id) => {
         error: "No user was found in the database",
       });
     }
-    console.log(user);
     req.profile = user;
     next();
   } catch (err) {
