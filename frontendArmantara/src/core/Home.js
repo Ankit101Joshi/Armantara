@@ -92,7 +92,7 @@ const Home = () => {
   };
 
   return (
-    <Base title="Home Page" description="Welcome to the Gifting Store">
+    <Base title="Home Page" description="Welcome to the Armantara Gifting Store">
       <div className="container">
         <div className="row justify-content-center">
           <h1 className="text-center text-white mt-4 mb-5">Featured Products</h1>

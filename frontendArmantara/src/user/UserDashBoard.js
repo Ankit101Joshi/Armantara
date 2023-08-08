@@ -35,7 +35,7 @@ const UserDashBoard = () => {
                     <p className="card-text">
                       You can view and track your latest orders here.
                     </p>
-                    <a href="/user/orders" className="btn btn-primary">
+                    <a href="user/order/all" className="btn btn-primary">
                       View Orders
                     </a>
                   </div>

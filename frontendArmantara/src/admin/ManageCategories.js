@@ -68,7 +68,7 @@ const ManageCategories = () => {
         <div className="row mt-4">
           <div className="col-md-8 offset-md-2">
             <h2 className="text-center mb-4">Update Categories</h2>
-            {/* Search bar */}
+      
             <div className="input-group mb-3">
               <input
                 type="text"
@@ -78,7 +78,7 @@ const ManageCategories = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            {/* End of search bar */}
+           
             {filteredCategories.map((category, index) => {
               return (
                 <div key={index} className="card mb-2">
