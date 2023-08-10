@@ -35,7 +35,7 @@ const Routes = () => {
         <AdminRoute path="/admin/product/update/:productId" element={<UpdateProduct />} />
         <Route exact path="/product/:productId" element={<ProductPage />} />
         <AdminRoute path="/admin/order/all" element={<ManageOrders />} /> 
-        <Route path="/admin/order/all" element={<ManageOrders />} /> 
+        {/* <Route path="/admin/order/all" element={<ManageOrders />} />  */}
         <Route path="/contact" element={<Contact />} />
         <Route path="/aboutus" element={<AboutUs />} />
       </AllRoutes>

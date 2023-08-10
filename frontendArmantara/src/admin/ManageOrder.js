@@ -1,5 +1,3 @@
-// ManageOrders.js
-
 import React, { useEffect, useState } from "react";
 import Base from "../core/Base";
 import { getAllOrders, updateOrderStatus } from "./helper/adminapicall";
@@ -42,8 +40,8 @@ const ManageOrders = () => {
             <thead className="thead-light">
               <tr>
                 <th>Order ID</th>
-                <th>User Name</th>
-                <th>User Email</th>
+                {/* <th>User Name</th> 
+                <th>User Email</th>  */}
                 <th>Products</th>
                 <th>Amount</th>
                 <th>Status</th>
@@ -53,8 +51,8 @@ const ManageOrders = () => {
               {orders.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
-                  <td>{order.user && order.user.name}</td>
-                  <td>{order.user && order.user.email}</td>
+                  {/* <td>{order.user && order.user.name}</td> 
+                  <td>{order.user && order.user.email}</td>  */}
                   <td>
                     {order.products &&
                       order.products.map((product) => (
@@ -88,3 +86,4 @@ const ManageOrders = () => {
 };
 
 export default ManageOrders;
+
