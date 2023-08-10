@@ -43,8 +43,10 @@ app.use("/api", orderRoutes);
 app.use("/api", stripeRoutes);
 
 // Use the contact router
+
 app.use("/api", contactRouter);
-app.use(cors());
+
+ app.use(cors());
 
 //PORT
 const port = process.env.PORT || 8000;
